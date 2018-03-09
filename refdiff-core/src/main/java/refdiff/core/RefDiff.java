@@ -1,5 +1,6 @@
 package refdiff.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import refdiff.core.api.RefactoringHandler;
 import refdiff.core.rm2.analysis.GitHistoryStructuralDiffAnalyzer;
 import refdiff.core.rm2.analysis.RefDiffConfig;
 import refdiff.core.rm2.analysis.RefDiffConfigImpl;
+import refdiff.core.rm2.analysis.SDModelBuilder;
 import refdiff.core.rm2.analysis.StructuralDiffHandler;
 import refdiff.core.rm2.model.SDModel;
 import refdiff.core.rm2.model.refactoring.SDRefactoring;
@@ -109,4 +111,19 @@ public class RefDiff implements GitRefactoringDetector {
     public String getConfigId() {
         return config.getId();
     }
+
+	public void detectAtCommit(File previousDir, File currentDir, List<String> filesBefore, List<String> filesCurrent,
+			StructuralDiffHandler handler) {
+		SDModelBuilder builder = new SDModelBuilder(config);
+		if (filesBefore.isEmpty() || filesCurrent.isEmpty()) {
+			return;
+		}
+
+		builder.analyzeAfter(currentDir, filesCurrent);
+		builder.analyzeBefore(previousDir, filesBefore);
+
+		final SDModel model = builder.buildModel();
+
+		handler.handle(null, model);
+	}
 }
