@@ -1,2 +1,2 @@
 # RefDiff
-A tool to compare different versions of Java source code to find refactoring changes between them
+RefDiff (https://github.com/aserg-ufmg/RefDiff/) adaptation for CORT review tool (https://github.com/tobiasbaum/reviewtool).
